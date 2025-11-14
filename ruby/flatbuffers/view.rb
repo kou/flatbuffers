@@ -33,7 +33,7 @@ module FlatBuffers
 
     def unpack_virtual_offset(vtable_offset)
       return 0 if vtable_offset > @vtable_max_offset
-      @data.unpack1("S<", offset: @vtable_start + vtable_offset)
+      @data.get_value(:u16, @vtable_start + vtable_offset)
     end
 
     def resolve_indirect(offset)
@@ -41,7 +41,7 @@ module FlatBuffers
     end
 
     def unpack_offset_raw(offset)
-      @data.unpack1("L<", offset: offset)
+      @data.get_value(:u32, offset)
     end
 
     def unpack_offset(offset)
@@ -49,7 +49,7 @@ module FlatBuffers
     end
 
     def unpack_signed_offset(offset)
-      @data.unpack1("l<", offset: @offset + offset)
+      @data.get_value(:s32, @offset + offset)
     end
 
     def unpack_bool(offset)
@@ -61,50 +61,50 @@ module FlatBuffers
     end
 
     def unpack_byte(offset)
-      @data.unpack1("c", offset: @offset + offset)
+      @data.get_value(:S8, @offset + offset)
     end
 
     def unpack_ubyte(offset)
-      @data.unpack1("C", offset: @offset + offset)
+      @data.get_value(:U8, @offset + offset)
     end
 
     def unpack_short(offset)
-      @data.unpack1("s<", offset: @offset + offset)
+      @data.get_value(:s16, @offset + offset)
     end
 
     def unpack_ushort(offset)
-      @data.unpack1("S<", offset: @offset + offset)
+      @data.get_value(:u16, @offset + offset)
     end
 
     def unpack_int(offset)
-      @data.unpack1("l<", offset: @offset + offset)
+      @data.get_value(:s32, @offset + offset)
     end
 
     def unpack_uint(offset)
-      @data.unpack1("L<", offset: @offset + offset)
+      @data.get_value(:u32, @offset + offset)
     end
 
     def unpack_long(offset)
-      @data.unpack1("q<", offset: @offset + offset)
+      @data.get_value(:s64, @offset + offset)
     end
 
     def unpack_ulong(offset)
-      @data.unpack1("Q<", offset: @offset + offset)
+      @data.get_value(:u64, @offset + offset)
     end
 
     def unpack_float(offset)
-      @data.unpack1("e", offset: @offset + offset)
+      @data.get_value(:f32, @offset + offset)
     end
 
     def unpack_double(offset)
-      @data.unpack1("E", offset: @offset + offset)
+      @data.get_value(:f64, @offset + offset)
     end
 
     def unpack_string(offset)
       value_offset = resolve_indirect(offset)
       length = unpack_offset_raw(value_offset)
-      @data.slice(value_offset + OFFSET_BYTE_SIZE,
-                  length)
+      @data.get_string(value_offset + OFFSET_BYTE_SIZE,
+                       length)
     end
 
     def unpack_table(klass, offset)

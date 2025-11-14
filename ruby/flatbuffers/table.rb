@@ -23,7 +23,10 @@ module FlatBuffers
       if input.is_a?(View)
         @view = input
       else
-        offset = input.unpack1("V")
+        if input.is_a?(String)
+          input = IO::Buffer.for(input)
+        end
+        offset = input.get_value(:u32, 0)
         @view = View.new(input, offset, have_vtable: true)
       end
     end
